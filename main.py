@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, ConfigDict
 from typing import List
@@ -19,6 +19,7 @@ def get_db():
 
 # pydantic
 class SkillSchema(BaseModel):
+    id: int | None = None 
     skill_name: str
     resource_type: str
     platform: str
@@ -36,7 +37,7 @@ def home():
 # CREATE
 @app.post("/skills", response_model=SkillSchema)
 def create_skill(data:SkillSchema, db: Session = Depends(get_db)):
-    skill = Skill(**data.model_dump())
+    skill = Skill(**data.model_dump(exclude={"id"}))
     db.add(skill)
     db.commit()
     db.refresh(skill)
@@ -51,7 +52,12 @@ def get_skill(db: Session = Depends(get_db)):
 @app.put("/skills/{skill_id}", response_model=SkillSchema)
 def update_skill(skill_id:int, data:SkillSchema, db: Session = Depends(get_db)):
     skill = db.query(Skill).filter(Skill.id == skill_id).first()
-    for key, value in data.model_dump().items():
+
+    if not skill:
+        raise HTTPException(status_code=404, detail="Skill not found")
+    
+    updates = data.model_dump(exclude={"id"})
+    for key, value in updates.items():
         setattr(skill, key, value)
     db.commit()
     db.refresh(skill)
@@ -61,6 +67,10 @@ def update_skill(skill_id:int, data:SkillSchema, db: Session = Depends(get_db)):
 @app.delete("/skills/{skill_id}")
 def delete_skill(skill_id: int, db: Session = Depends(get_db)):
     skill = db.query(Skill).filter(Skill.id == skill_id).first()
+
+    if not skill:
+        raise HTTPException(status_code=404, detail="Skill not found")
+
     db.delete(skill)
     db.commit()
     return {"message": "Skill Deleted"}
