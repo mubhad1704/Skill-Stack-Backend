@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import List
 
 from database import SessionLocal, engine
@@ -19,16 +19,15 @@ def get_db():
 
 # pydantic
 class SkillSchema(BaseModel):
-    skill_name = str
-    resource_type = str
-    platform = str
-    status = str
-    hours = int
-    notes = str
-    difficulty = int
+    skill_name: str
+    resource_type: str
+    platform: str
+    status: str
+    hours: int
+    notes: str
+    difficulty: int
 
-    class Config:
-        orm_mode=True
+    model_config = ConfigDict(from_attributes=True)
 
 @app.get("/")
 def home():
