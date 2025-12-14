@@ -3,12 +3,24 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel, ConfigDict
 from typing import List
 
+# cors
+from fastapi.middleware.cors import CORSMiddleware
+
 from database import SessionLocal, engine
 from models import Skill, Base
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+# cors
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def get_db():
     db = SessionLocal()
