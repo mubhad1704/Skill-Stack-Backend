@@ -60,6 +60,14 @@ def create_skill(data:SkillSchema, db: Session = Depends(get_db)):
 def get_skill(db: Session = Depends(get_db)):
     return db.query(Skill).all()
 
+# GET ONE
+@app.get("/skills/{skill_id}", response_model=SkillSchema)
+def get_one(skill_id: int, db: Session = Depends(get_db)):
+    skill = db.query(Skill).filter(Skill.id == skill_id).first()
+    if not skill:
+        raise HTTPException(status_code=404, detail="Skill not found")
+    return skill
+
 # UPDATE
 @app.put("/skills/{skill_id}", response_model=SkillSchema)
 def update_skill(skill_id:int, data:SkillSchema, db: Session = Depends(get_db)):
