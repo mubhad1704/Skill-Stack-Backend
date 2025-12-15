@@ -40,8 +40,7 @@ class SkillSchema(BaseModel):
     notes: str
     difficulty: int
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 @app.get("/")
 def home():
@@ -50,7 +49,7 @@ def home():
 # CREATE
 @app.post("/skills", response_model=SkillSchema)
 def create_skill(data:SkillSchema, db: Session = Depends(get_db)):
-    skill = Skill(**data.dict(exclude={"id"}))
+    skill = Skill(**data.model_dump(exclude={"id"}))
     db.add(skill)
     db.commit()
     db.refresh(skill)
@@ -77,7 +76,7 @@ def update_skill(skill_id:int, data:SkillSchema, db: Session = Depends(get_db)):
     if not skill:
         raise HTTPException(status_code=404, detail="Skill not found")
     
-    updates = data.dict(exclude={"id"})
+    updates = data.model_dump(exclude={"id"})
     for key, value in updates.items():
         setattr(skill, key, value)
     db.commit()
