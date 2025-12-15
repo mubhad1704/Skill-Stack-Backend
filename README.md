@@ -13,7 +13,7 @@ The backend of SkillStack is a RESTful API built with FastAPI and SQLAlchemy. It
 - CORS enabled to allow frontend communication
 - Simple, self-contained API with Pydantic models for validation
 
-⚙️ **Setup Instructions**
+**Setup Instructions**
 
 Prerequisites
 
@@ -55,7 +55,7 @@ uvicorn main:app --reload
 - The backend will be available at http://127.0.0.1:8000/
 - Swagger UI docs: http://127.0.0.1:8000/docs
 
-📝 **API Endpoints**
+**API Endpoints**
 | Method | Endpoint       | Description                  |
 |--------|----------------|------------------------------|
 | GET    | `/`            | Test endpoint, returns API status |
@@ -79,7 +79,7 @@ Skill Data Schema:
 }
 ```
 
-🛠️ **Tech Stack**
+**Tech Stack**
 
 - Framework: FastAPI
 - Database: SQLite
@@ -88,7 +88,7 @@ Skill Data Schema:
 - Server: Uvicorn
 - CORS: FastAPI Middleware
 
-🔗 Frontend Connection
+**Frontend Connection**
 
 The frontend connects to the backend API via axios in src/api.js:
 
